@@ -85,6 +85,13 @@ $ alias predeploy="checklist -f ~/predeploy.txt"
 $ predeploy
 ```
 
+How can I use templates for my checklists?
+
+```
+$ cp ~/checklist_template.txt ~/checklist.txt
+```
+
+
 ### License
 
 checklist is MIT licensed.
