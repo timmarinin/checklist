@@ -1,6 +1,8 @@
 # checklist
 
-Believe in power of checklists! This is a small tool to manipulate
+Believe in power of checklists!
+
+This is a small tool to manipulate
 checklists from command line.
 
 Dependencies: python3
@@ -14,7 +16,9 @@ checklist stores checklist in plaintext file with in simple format:
 - [ ] this item is not complete
 ```
 
-That's it.
+That's it. Make sure that x is lowercase ascii x (just hit x, not х, the cyrillic letter),
+and that space is just space. Items are one-line only: if you need more than one line for an
+item, then you probably should rewrite it or move some context out of the checklist.
 
 ## Installation
 
