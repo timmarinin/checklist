@@ -1,0 +1,3 @@
+- [x] Repository for `checklist` is created
+- [x] README.md is written
+- [ ] `checklist` is perfect

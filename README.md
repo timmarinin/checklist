@@ -48,8 +48,6 @@ And you can also specify checklist file:
 $ checklist -f ./deploy_checklist.txt check 2
 ```
 
-```
-
 ## Combining with other tools
 
 How many items do I still have to do?
@@ -68,6 +66,12 @@ How can I use it from vim?
 
 ```
 :!checklist
+```
+
+How can I copy the remaining items to clipboard (I'm on macOS)?
+
+```
+$ checklist | pbcopy
 ```
 
 ### License
