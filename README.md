@@ -78,6 +78,13 @@ How can I copy the remaining items to clipboard (I'm on macOS)?
 $ checklist | pbcopy
 ```
 
+How can I configure another checklist file to avoid writing -f all the time?
+
+```
+$ alias predeploy="checklist -f ~/predeploy.txt"
+$ predeploy
+```
+
 ### License
 
 checklist is MIT licensed.
