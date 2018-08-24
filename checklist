@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+#
+# checklist - read and manipulate checklists from command-line
+#
+# checklist -h -- help
+# checklist -f checklist.txt -- change checklist file
+# checklist add hello world -- add hello world to checklist
+# checklist check 2 -- check or uncheck item on line 2 of the checklist
+#
+# checklist 1.0 written by mt, https://marinintim.com/projects/checklist
+# MIT licensed
+
+import os
+import argparse
+
+# read checklist from '~/checklist.txt' or -f [FILE]
+# format is: every line with - [ ] or - [x] in the beginning is an item to be checked
+
+def line_to_task(str):
+    if str.startswith("- [x] "):
+        return ('x', str[6:])
+    elif str.startswith("- [ ] "):
+        return (' ', str[6:])
+    else:
+        return False
+
+def task_to_line(t):
+    idx, val = t
+    done, text = val
+    if done == 'x':
+        return "- [x] " + text + "\n"
+    else:
+        return "- [ ] " + text + "\n"
+
+def read_from_file(file):
+    with open(file) as f:
+        lines = f.read().splitlines()
+        tasks = [t for t in map(line_to_task, lines) if t != False]
+        return list(enumerate(tasks, start=1))
+
+def write_to_file(lst, file):
+    with open(file, "w") as f:
+        lines = map(task_to_line, lst)
+        f.writelines(lines)
+
+def item_from_text(lst, text):
+    print ( text )
+    last = lst[-1]
+
+    newline = last[0] + 1
+    return (newline, (' ', ' '.join(text)))
+
+
+def append_item_from_text(lst, text):
+    lst.append(item_from_text(lst, text))
+    return lst
+
+def last_len(lst):
+    if len(lst) == 0:
+        return 0
+    return len(str(lst[-1][0]))
+
+def print_checklist(lst):
+    l = last_len(lst)
+
+    for idx, val in lst:
+        status, txt = val
+        print(str(idx).rjust(l, ' ') + ":", "[" + status + "] " + txt)
+
+def check(lst, idx):
+    _, (done, text) = lst[idx]
+    if done == 'x':
+        lst[idx] = (idx + 1, (' ', text))
+    else:
+        lst[idx] = (idx + 1, ('x', text))
+    return lst
+
+def only_remaining(lst):
+    return list(filter(lambda t: t[1][0] != 'x', lst))
+
+default_path = os.path.expanduser("~/checklist.txt")
+
+def main():
+    arger = argparse.ArgumentParser()
+    arger.add_argument("-f", "--file", action='store', default=default_path, help="file that contains the checklist")
+    arger.add_argument('-a', "--all", action='store_true', default=False, help='list all items')
+    arger.add_argument('--debug', action='store', default=False, help='dump internal representation of checklist')
+    subparsers = arger.add_subparsers(dest="command")
+
+    check_parser = subparsers.add_parser("check")
+    check_parser.add_argument("item_number", type=int, help="the line number of the item to be checked")
+    add_parser = subparsers.add_parser("add")
+    add_parser.add_argument("item_text", nargs="*", help="Text of the item")
+
+    opts = arger.parse_args()
+    
+    items = read_from_file(opts.file)
+
+    if opts.command == "check":
+        item_number = opts.item_number - 1
+        items = check(items, item_number)
+        write_to_file(items, opts.file)
+    elif opts.command == "add":
+        items = append_item_from_text(items, opts.item_text)
+        write_to_file(items, opts.file)
+    else:
+        if opts.all:
+            print_checklist(items)
+        else:
+            print_checklist(only_remaining(items))
+
+    if opts.debug:
+        print(items)
+
+main()
